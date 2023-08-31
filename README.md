@@ -1,15 +1,5 @@
 # citra-cloudsaves-js
 
-To install dependencies:
+### A simple JS/TS client for [Citra CloudSaves](https://github.com/Minemobs/citra-cloudsaves)
 
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v0.8.1. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+(Not endorsed by Citra so don't expect getting help from them)
