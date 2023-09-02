@@ -1,7 +1,11 @@
 import { readFileSync } from "fs";
 import { login, addSaveFile, deleteSaveFile, getSaveFile } from "./lib";
 
-const token = await login("*******", "********");
+const dotEnv = await Bun.file(Bun.main.split("/").slice(0, -1).join("/") + "/.env").text().then(str => str.split("\n") as [string, string]).then(content => {
+    return {username: content[0], password: content[1]}
+});
+
+const token = await login(dotEnv.username, dotEnv.password);
 
 async function sendFile() {
     if(token === undefined) {
@@ -10,7 +14,7 @@ async function sendFile() {
         throw token;
     }
     const blob = new Blob([readFileSync("./main")]);
-    console.log(await addSaveFile(token, 0, blob));    
+    console.log(await addSaveFile(token, "0004000000055D00", blob));    
 }
 
 async function deleteFile() {
@@ -19,7 +23,7 @@ async function deleteFile() {
     } else if("title" in token) {
         throw token;
     }
-    console.log(await deleteSaveFile(token, 0));
+    console.log(await deleteSaveFile(token, "0004000000055D00"));
 }
 
 async function getFile() {
@@ -28,9 +32,9 @@ async function getFile() {
     } else if("title" in token) {
         throw token;
     }
-    console.log(await getSaveFile(token, 0));
+    console.log(await getSaveFile(token, "0004000000055D00"));
 }
 
-//await sendFile();
+await sendFile();
 //await deleteFile();
-await getFile();
+//await getFile();

@@ -36,7 +36,7 @@ function tokenToAuth(token: Token) : [string, string] {
 }
 
 // TODO: gameID should be a string
-export async function addSaveFile(token: Token, gameID: number, blob: Blob, apiURL: URL = new URL("https://citra.thesimpleteam.net")) {
+export async function addSaveFile(token: Token, gameID: string, blob: Blob, apiURL: URL = new URL("https://citra.thesimpleteam.net")) {
     const formData = new FormData();
     formData.append("save", blob);
     return await fetch(new URL("save/" + gameID, apiURL), {
@@ -46,15 +46,15 @@ export async function addSaveFile(token: Token, gameID: number, blob: Blob, apiU
     }).then(it => it.json<Result>(), undefined);
 }
 
-export async function deleteSaveFile(token: Token, gameID: number, apiURL: URL = new URL("https://citra.thesimpleteam.net")) {
-    return await fetch(new URL("save/" + gameID, apiURL), {
+export async function deleteSaveFile(token: Token, titleID: string, apiURL: URL = new URL("https://citra.thesimpleteam.net")) {
+    return await fetch(new URL("save/" + titleID, apiURL), {
         method: "DELETE",
         headers: [ tokenToAuth(token) ]
     }).then(it => it.json<Result>(), undefined);
 }
 
-export async function getSaveFile(token: Token, gameID: number, apiURL: URL = new URL("https://citra.thesimpleteam.net")) {
-    return await fetch(new URL("save/" + gameID, apiURL), {
+export async function getSaveFile(token: Token, titleID: string, apiURL: URL = new URL("https://citra.thesimpleteam.net")) {
+    return await fetch(new URL("save/" + titleID, apiURL), {
         headers: [ tokenToAuth(token) ]
     }).then(it => (it.ok ? it.text() : it.json<HttpError>) as Promise<HttpError | string>, undefined);
 }
