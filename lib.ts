@@ -18,7 +18,7 @@ type Result = HttpResponse | HttpError;
 
 type Token = { token: string };
 
-export async function login(username: string, password: string, apiURL: URL = new URL("https://citra.thesimpleteam.net")) {
+export async function login(username: string, password: string, apiURL: URL = new URL("https://citra.thesimpleteam.net")) : Promise<undefined | Token | HttpError> {
     const response = await fetch(new URL("/login", new URL("login", apiURL)), {
         method: "POST",
         headers: {
@@ -35,8 +35,7 @@ function tokenToAuth(token: Token) : [string, string] {
     return ["Authorization", `Bearer ${token.token}` ];
 }
 
-// TODO: gameID should be a string
-export async function addSaveFile(token: Token, gameID: string, blob: Blob, apiURL: URL = new URL("https://citra.thesimpleteam.net")) {
+export async function addSaveFile(token: Token, gameID: string, blob: Blob, apiURL: URL = new URL("https://citra.thesimpleteam.net")) : Promise<Result | undefined> {
     const formData = new FormData();
     formData.append("save", blob);
     return await fetch(new URL("save/" + gameID, apiURL), {
@@ -46,15 +45,15 @@ export async function addSaveFile(token: Token, gameID: string, blob: Blob, apiU
     }).then(it => it.json<Result>(), undefined);
 }
 
-export async function deleteSaveFile(token: Token, titleID: string, apiURL: URL = new URL("https://citra.thesimpleteam.net")) {
+export async function deleteSaveFile(token: Token, titleID: string, apiURL: URL = new URL("https://citra.thesimpleteam.net")) : Promise<Result | undefined> {
     return await fetch(new URL("save/" + titleID, apiURL), {
         method: "DELETE",
         headers: [ tokenToAuth(token) ]
     }).then(it => it.json<Result>(), undefined);
 }
 
-export async function getSaveFile(token: Token, titleID: string, apiURL: URL = new URL("https://citra.thesimpleteam.net")) {
+export async function getSaveFile(token: Token, titleID: string, apiURL: URL = new URL("https://citra.thesimpleteam.net")) : Promise<HttpError | Blob | undefined> {
     return await fetch(new URL("save/" + titleID, apiURL), {
         headers: [ tokenToAuth(token) ]
-    }).then(it => (it.ok ? it.text() : it.json<HttpError>) as Promise<HttpError | string>, undefined);
+    }).then(it => (it.ok ? it.blob() : it.json<HttpError>) as Promise<HttpError | Blob>, undefined);
 }
